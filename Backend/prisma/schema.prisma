@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// User Management
+// ============================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  avatar    String?
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Supabase integration - stores the Supabase auth user ID
+  // Note: Field named supertokensId for backwards compatibility, stores Supabase user ID
+  supertokensId String? @unique @map("supabase_id")
+
+  // Relations
+  sessions      Session[]
+  conversations Conversation[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ============================================
+// Session Management
+// ============================================
+
+model Session {
+  id           String    @id @default(uuid())
+  userId       String
+  deviceInfo   String?
+  ipAddress    String?
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ============================================
+// Conversation & Messages (for AI interactions)
+// ============================================
+
+model Conversation {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String?
+  summary   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([userId])
+  @@map("conversations")
+}
+
+model Message {
+  id             String      @id @default(uuid())
+  conversationId String
+  role           MessageRole
+  content        String
+  metadata       Json?
+  createdAt      DateTime    @default(now())
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@map("messages")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+// ============================================
+// Agent Actions (tracking what the AI does)
+// ============================================
+
+model AgentAction {
+  id          String       @id @default(uuid())
+  type        ActionType
+  status      ActionStatus @default(PENDING)
+  payload     Json?
+  result      Json?
+  errorMessage String?
+  startedAt   DateTime     @default(now())
+  completedAt DateTime?
+
+  @@index([type])
+  @@index([status])
+  @@map("agent_actions")
+}
+
+enum ActionType {
+  OPEN_APP
+  NAVIGATE_URL
+  READ_SCREEN
+  SEND_EMAIL
+  READ_EMAIL
+  EXECUTE_COMMAND
+}
+
+enum ActionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}

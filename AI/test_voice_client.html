@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO Agent Voice Test</title>
+    <script src="https://unpkg.com/livekit-client@2.6.1/dist/livekit-client.umd.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .config-panel {
+            background: #252542;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-connect {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .btn-connect:hover {
+            background: #00b8e6;
+        }
+
+        .btn-connect:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        .btn-disconnect {
+            background: #ff4757;
+            color: #fff;
+        }
+
+        .btn-disconnect:hover {
+            background: #ff3344;
+        }
+
+        .status-panel {
+            background: #252542;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .status {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .status.connected {
+            color: #2ed573;
+        }
+
+        .status.error {
+            color: #ff4757;
+        }
+
+        .participants {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .participant {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #252542;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .participant.speaking {
+            border-left: 3px solid #2ed573;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #444;
+        }
+
+        .indicator.active {
+            background: #2ed573;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .audio-container {
+            display: none;
+        }
+
+        .mic-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #1a1a2e;
+            border-radius: 8px;
+        }
+
+        .mic-icon {
+            font-size: 24px;
+        }
+
+        .instructions {
+            background: #252542;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .instructions h4 {
+            color: #00d4ff;
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🎤 NEO Agent Voice Test</h1>
+    <p class="subtitle">Test your LiveKit AI agent with voice</p>
+
+    <div class="config-panel" id="configPanel">
+        <label>LiveKit WebSocket URL</label>
+        <input type="text" id="livekitUrl" placeholder="ws://your-livekit-server:7880"
+            value="ws://neo-production-alb-1917928879.us-east-1.elb.amazonaws.com">
+
+        <label>Room Name</label>
+        <input type="text" id="roomName" value="test-voice-room">
+
+        <label>Your Name</label>
+        <input type="text" id="userName" value="test-user">
+
+        <label>Access Token (generate with: lk token create)</label>
+        <input type="text" id="token" placeholder="Paste your token here...">
+
+        <button class="btn-connect" id="connectBtn" onclick="toggleConnection()">
+            🎙️ Connect & Start Voice Test
+        </button>
+
+        <div class="instructions">
+            <h4>How to generate a token:</h4>
+            <code
+                style="display: block; background: #1a1a2e; padding: 10px; border-radius: 4px; margin-top: 10px; word-break: break-all;">
+        lk token create \<br>
+        &nbsp;&nbsp;--api-key YOUR_API_KEY \<br>
+        &nbsp;&nbsp;--api-secret YOUR_SECRET \<br>
+        &nbsp;&nbsp;--room test-voice-room \<br>
+        &nbsp;&nbsp;--identity test-user \<br>
+        &nbsp;&nbsp;--valid-for 1h
+      </code>
+        </div>
+    </div>
+
+    <div class="status-panel" id="statusPanel" style="display: none;">
+        <div class="status" id="status">Connecting...</div>
+
+        <div class="mic-status" id="micStatus">
+            <span class="mic-icon">🎤</span>
+            <span id="micText">Microphone ready</span>
+        </div>
+
+        <div class="participants" id="participants">
+            <strong>Participants:</strong>
+            <div id="participantList"></div>
+        </div>
+
+        <button class="btn-disconnect" onclick="disconnect()" style="margin-top: 20px;">
+            Disconnect
+        </button>
+    </div>
+
+    <div class="audio-container" id="audioContainer"></div>
+
+    <script>
+        let room = null;
+        let isConnected = false;
+
+        async function toggleConnection() {
+            if (isConnected) {
+                disconnect();
+            } else {
+                await connect();
+            }
+        }
+
+        async function connect() {
+            const url = document.getElementById('livekitUrl').value;
+            const token = document.getElementById('token').value;
+            const roomName = document.getElementById('roomName').value;
+
+            if (!token) {
+                alert('Please enter an access token. Generate one using the lk CLI.');
+                return;
+            }
+
+            document.getElementById('connectBtn').disabled = true;
+            document.getElementById('connectBtn').textContent = 'Connecting...';
+
+            try {
+                room = new LivekitClient.Room({
+                    adaptiveStream: true,
+                    dynacast: true,
+                });
+
+                // Set up event handlers
+                room.on(LivekitClient.RoomEvent.Connected, () => {
+                    console.log('Connected to room');
+                    showStatusPanel();
+                    updateStatus('Connected! Speak to interact with the agent.', 'connected');
+                    updateParticipants();
+                });
+
+                room.on(LivekitClient.RoomEvent.Disconnected, () => {
+                    console.log('Disconnected from room');
+                    updateStatus('Disconnected', 'error');
+                    disconnect();
+                });
+
+                room.on(LivekitClient.RoomEvent.ParticipantConnected, (participant) => {
+                    console.log('Participant connected:', participant.identity);
+                    updateParticipants();
+                    handleParticipantTracks(participant);
+                });
+
+                room.on(LivekitClient.RoomEvent.ParticipantDisconnected, (participant) => {
+                    console.log('Participant disconnected:', participant.identity);
+                    updateParticipants();
+                });
+
+                room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    console.log('Track subscribed:', track.kind, 'from', participant.identity);
+                    if (track.kind === 'audio') {
+                        const audioElement = track.attach();
+                        audioElement.id = `audio-${participant.identity}`;
+                        document.getElementById('audioContainer').appendChild(audioElement);
+                    }
+                });
+
+                room.on(LivekitClient.RoomEvent.TrackUnsubscribed, (track, publication, participant) => {
+                    track.detach().forEach(el => el.remove());
+                });
+
+                room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
+                    updateSpeakingIndicators(speakers);
+                });
+
+                room.on(LivekitClient.RoomEvent.DataReceived, (payload, participant) => {
+                    const message = new TextDecoder().decode(payload);
+                    console.log('Data from agent:', message);
+                });
+
+                // Connect to the room
+                await room.connect(url, token);
+
+                // Enable microphone
+                await room.localParticipant.setMicrophoneEnabled(true);
+                document.getElementById('micText').textContent = 'Microphone active - speak now!';
+
+                isConnected = true;
+
+                // Handle existing participants
+                room.remoteParticipants.forEach(handleParticipantTracks);
+
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('Failed to connect: ' + error.message);
+                document.getElementById('connectBtn').disabled = false;
+                document.getElementById('connectBtn').textContent = '🎙️ Connect & Start Voice Test';
+            }
+        }
+
+        function handleParticipantTracks(participant) {
+            participant.trackPublications.forEach((publication) => {
+                if (publication.track && publication.track.kind === 'audio') {
+                    const audioElement = publication.track.attach();
+                    audioElement.id = `audio-${participant.identity}`;
+                    document.getElementById('audioContainer').appendChild(audioElement);
+                }
+            });
+        }
+
+        function disconnect() {
+            if (room) {
+                room.disconnect();
+                room = null;
+            }
+            isConnected = false;
+            document.getElementById('configPanel').style.display = 'block';
+            document.getElementById('statusPanel').style.display = 'none';
+            document.getElementById('connectBtn').disabled = false;
+            document.getElementById('connectBtn').textContent = '🎙️ Connect & Start Voice Test';
+            document.getElementById('audioContainer').innerHTML = '';
+        }
+
+        function showStatusPanel() {
+            document.getElementById('configPanel').style.display = 'none';
+            document.getElementById('statusPanel').style.display = 'block';
+        }
+
+        function updateStatus(message, className) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = 'status ' + (className || '');
+        }
+
+        function updateParticipants() {
+            const list = document.getElementById('participantList');
+            list.innerHTML = '';
+
+            // Add local participant
+            if (room && room.localParticipant) {
+                const div = document.createElement('div');
+                div.className = 'participant';
+                div.id = `p-${room.localParticipant.identity}`;
+                div.innerHTML = `
+          <span class="indicator active"></span>
+          <span>👤 ${room.localParticipant.identity} (you)</span>
+        `;
+                list.appendChild(div);
+            }
+
+            // Add remote participants
+            if (room) {
+                room.remoteParticipants.forEach((participant) => {
+                    const div = document.createElement('div');
+                    div.className = 'participant';
+                    div.id = `p-${participant.identity}`;
+                    const isAgent = participant.identity.toLowerCase().includes('agent') ||
+                        participant.identity.startsWith('AW_');
+                    div.innerHTML = `
+            <span class="indicator"></span>
+            <span>${isAgent ? '🤖' : '👤'} ${participant.identity}${isAgent ? ' (AI Agent)' : ''}</span>
+          `;
+                    list.appendChild(div);
+                });
+            }
+        }
+
+        function updateSpeakingIndicators(speakers) {
+            // Reset all indicators
+            document.querySelectorAll('.participant .indicator').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Activate speaking indicators
+            speakers.forEach(speaker => {
+                const el = document.querySelector(`#p-${speaker.identity} .indicator`);
+                if (el) el.classList.add('active');
+            });
+        }
+    </script>
+</body>
+
+</html>

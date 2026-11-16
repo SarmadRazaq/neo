@@ -1,0 +1,226 @@
+/* ===== Splash Screen ===== */
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-primary);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+/* ===== Background ===== */
+
+.splash-screen__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Animated glow layers */
+.splash-screen__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+}
+
+.splash-screen__glow--1 {
+  width: 400px;
+  height: 400px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%);
+}
+
+.splash-screen__glow--2 {
+  width: 300px;
+  height: 300px;
+  left: 30%;
+  top: 60%;
+  background: radial-gradient(circle, rgba(58, 126, 251, 0.25) 0%, transparent 70%);
+  opacity: 0.2;
+}
+
+.splash-screen__glow--3 {
+  width: 350px;
+  height: 350px;
+  right: 20%;
+  top: 30%;
+  background: radial-gradient(circle, rgba(0, 218, 255, 0.2) 0%, transparent 70%);
+  opacity: 0.2;
+}
+
+/* ===== Floating Particles ===== */
+
+.splash-screen__particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.splash-screen__particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--color-accent-cyan);
+  border-radius: 50%;
+  left: var(--x);
+  bottom: -10px;
+  opacity: 0;
+  animation: splash-particle-rise var(--duration) ease-out infinite;
+  animation-delay: var(--delay);
+  box-shadow: 0 0 6px var(--color-accent-cyan);
+}
+
+@keyframes splash-particle-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+  10% {
+    opacity: 0.6;
+    transform: translateY(-20px) scale(1);
+  }
+  90% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) scale(0.5);
+  }
+}
+
+/* ===== Content Container ===== */
+
+.splash-screen__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+}
+
+/* ===== Logo Animation ===== */
+
+.splash-screen__logo {
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: splash-logo-enter 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes splash-logo-enter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Spinner Animation ===== */
+
+.splash-screen__spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: splash-fade-in 0.5s ease-out forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes splash-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== Tagline Animation ===== */
+
+.splash-screen__tagline-container {
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  animation: splash-tagline-enter 0.6s ease-out forwards;
+  animation-delay: 0.8s;
+}
+
+.splash-screen__tagline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--color-accent-cyan);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+@keyframes splash-tagline-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Vignette Overlay ===== */
+
+.splash-screen__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 50%,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+}
+
+/* ===== Phase Transitions ===== */
+
+/* Entering and visible phase - normal state */
+.splash-screen--entering,
+.splash-screen--visible {
+  opacity: 1;
+}
+
+/* Exiting phase - fade out everything */
+.splash-screen--exiting {
+  animation: splash-exit 0.8s ease-out forwards;
+}
+
+@keyframes splash-exit {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ===== Reduced Motion ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen__logo,
+  .splash-screen__spinner-container,
+  .splash-screen__tagline-container {
+    animation-duration: 0.1s;
+  }
+
+  .splash-screen__particle {
+    animation: none;
+    opacity: 0;
+  }
+
+  .splash-screen--exiting {
+    animation-duration: 0.2s;
+  }
+}

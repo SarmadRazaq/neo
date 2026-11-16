@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist
+coverage
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files (secrets should come from Doppler/ECS)
+.env
+.env.local
+.env.*.local
+
+# Python files (legacy)
+__pycache__
+*.py
+*.pyc
+.venv
+graphs/
+llm/
+models/
+state/
+
+# Test files
+test
+*.spec.ts
+jest.config.js
+
+# Documentation
+README.md
+*.md
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*

@@ -1,0 +1,98 @@
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Node.js
+node_modules/
+.pnp/
+.pnp.js
+.pnp.*
+coverage/
+.nyc_output/
+dist/
+build/
+out/
+.tmp/
+.cache/
+.eslintcache
+*.tsbuildinfo
+.yarn/
+
+# Electron
+release/
+*.dmg
+*.exe
+*.AppImage
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.venv/
+venv/
+ENV/
+env/
+.env/
+.env.local
+.env.*.local
+
+# Python tooling
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.python-version
+.Python
+
+# Jupyter
+*.ipynb
+
+# Prisma
+Backend/prisma/migrations/**/migration_lock.toml
+Backend/prisma/*.db
+Backend/prisma/*.db-journal
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+terraform.tfvars.json
+.crash.log
+.crash.*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets
+.Doppler/
+doppler.env
+.doppler-token
+Frontend/electron/src/main/.doppler-token
+
+# App outputs
+ai_outputs/

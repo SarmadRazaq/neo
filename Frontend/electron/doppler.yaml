@@ -1,0 +1,3 @@
+setup:
+  project: neo
+  config: dev

@@ -1,0 +1,60 @@
+{
+  "name": "neo_ai",
+  "version": "1.0.0",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc && npm run build:renderer",
+    "build:renderer": "webpack --config webpack.config.js --mode production",
+    "dev": "tsc && doppler run -- concurrently \"npm run dev:main\" \"npm run dev:renderer\" \"wait-on http://localhost:3001 -t 30000 && electron .\"",
+    "dev:main": "tsc -w",
+    "dev:renderer": "webpack serve --config webpack.config.js --mode development",
+    "start": "doppler run -- electron .",
+    "embed:token": "node -e \"const fs=require('fs'), dir='dist/main'; fs.mkdirSync(dir,{recursive:true}); fs.writeFileSync(dir+'/.doppler-token', process.env.DOPPLER_SERVICE_TOKEN || '')\"",
+    "package": "npm run build && npm run embed:token && electron-builder --win --mac --linux",
+    "package:win": "npm run build && npm run embed:token && electron-builder --win",
+    "package:mac": "npm run build && npm run embed:token && electron-builder --mac",
+    "package:linux": "npm run build && npm run embed:token && electron-builder --linux",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Zenaptic Labs",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zenapticlabs/NEO.git"
+  },
+  "description": "Blind-accessible Electron app with voice commands and magic link authentication",
+  "dependencies": {
+    "@browserbasehq/stagehand": "^3.0.0",
+    "@livekit/components-react": "^2.0.0",
+    "@livekit/components-styles": "^1.0.0",
+    "@supabase/supabase-js": "^2.91.1",
+    "dotenv": "^16.6.1",
+    "livekit-client": "^2.0.0",
+    "livekit-server-sdk": "^2.0.0",
+    "lucide-react": "^0.562.0",
+    "puppeteer": "^24.35.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^3.1.1",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "concurrently": "^8.2.2",
+    "css-loader": "^6.8.1",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.7.0",
+    "html-webpack-plugin": "^5.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "wait-on": "^7.2.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}

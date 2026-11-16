@@ -1,0 +1,193 @@
+/* Login Screen Styles - Matching Figma Design */
+
+.login-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 80px 24px 40px;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Content Container */
+.login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Header */
+.login-header {
+  text-align: left;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.login-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.login-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+/* Form */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-field {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.login-field .neo-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-accent-cyan);
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.login-field .neo-input {
+  width: 100%;
+  max-width: 100%;
+  padding: 14px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-field .neo-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.login-field .neo-input:focus {
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 218, 255, 0.1);
+}
+
+.login-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+/* Error state */
+.login-field .neo-input-error {
+  border-color: #ef4444;
+}
+
+.login-field .neo-input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.login-error {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #ef4444;
+  margin-top: 8px;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+/* Submit Button - Gradient style matching Figma */
+.login-submit-btn {
+  width: 100%;
+  padding: 16px 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  background: linear-gradient(90deg, #3A7EFB 0%, #06B6D4 100%);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+}
+
+.login-submit-btn:hover {
+  box-shadow: 0 4px 25px rgba(6, 182, 212, 0.45);
+}
+
+.login-submit-btn:active {
+  opacity: 0.9;
+}
+
+.login-submit-btn:focus-visible {
+  outline: 2px solid var(--color-accent-cyan);
+  outline-offset: 2px;
+}
+
+.login-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loading spinner in button */
+.login-submit-btn .login-spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+.login-submit-btn:disabled .login-spinner + span {
+  opacity: 0.9;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Help Link - positioned at bottom */
+.login-help-link {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color 0.15s ease;
+}
+
+.login-help-link:hover {
+  color: var(--color-text-primary);
+}
+
+.login-help-link:focus-visible {
+  outline: 2px solid var(--color-accent-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

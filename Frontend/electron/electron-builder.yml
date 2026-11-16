@@ -1,0 +1,60 @@
+appId: com.zenapticlabs.neo
+productName: NEO
+copyright: Copyright © 2026 Zenaptic Labs
+
+directories:
+  output: release
+  buildResources: assets
+
+files:
+  - dist/**/*
+  - node_modules/**/*
+  - "!node_modules/**/*.{md,ts,map}"
+  - "!**/node_modules/.cache/**"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  # Azure Trusted Signing — electron-builder reads AZURE_TENANT_ID,
+  # AZURE_CLIENT_ID, and AZURE_CLIENT_SECRET from the environment.
+  # When these are not set, signing is skipped automatically.
+  azureSignOptions:
+    publisherName: "Sung-Hyun Kang"
+    endpoint: "https://eus.codesigning.azure.net/"
+    certificateProfileName: "neo-cert"
+    codeSigningAccountName: "neo"
+
+nsis:
+  oneClick: true
+  perMachine: false
+  allowToChangeInstallationDirectory: false
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.productivity
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: assets/entitlements.mac.plist
+  entitlementsInherit: assets/entitlements.mac.inherit.plist
+
+afterSign: scripts/notarize.js
+
+dmg:
+  sign: false
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  category: Utility
+
+# Skip native module rebuild (bufferutil, utf-8-validate, etc.)
+# These are optional perf optimizations - JS fallbacks work fine
+npmRebuild: false

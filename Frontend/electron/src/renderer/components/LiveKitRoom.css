@@ -1,0 +1,121 @@
+/**
+ * LiveKit Room Styles
+ * Styles for the voice assistant UI
+ */
+
+.voice-assistant-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 400px;
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  border: 1px solid #3a3a3a;
+}
+
+.voice-assistant-status {
+  text-align: center;
+}
+
+.voice-assistant-status h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.status-indicator {
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: #3a3a3a;
+  color: #aaaaaa;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.status-listening {
+  background-color: #1a4a1a;
+  color: #4ade80;
+}
+
+.status-indicator.status-thinking {
+  background-color: #4a3a1a;
+  color: #fbbf24;
+}
+
+.status-indicator.status-speaking {
+  background-color: #1a3a4a;
+  color: #60a5fa;
+}
+
+.status-indicator.status-disconnected {
+  background-color: #4a1a1a;
+  color: #f87171;
+}
+
+.voice-visualizer {
+  width: 100%;
+  max-width: 300px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Override LiveKit default styles for accessibility */
+.lk-voice-assistant-control-bar {
+  background-color: transparent;
+  border: none;
+}
+
+.lk-voice-assistant-control-bar button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #4a9eff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  outline: none;
+}
+
+.lk-voice-assistant-control-bar button:hover {
+  background-color: #3a8eef;
+}
+
+.lk-voice-assistant-control-bar button:focus {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}
+
+.lk-voice-assistant-control-bar button:disabled {
+  background-color: #555555;
+  color: #888888;
+  cursor: not-allowed;
+}
+
+/* Bar visualizer styles */
+.lk-audio-bar-visualizer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.lk-audio-bar-visualizer > div {
+  background-color: #4a9eff;
+  border-radius: 2px;
+  transition: height 0.1s ease;
+}
+

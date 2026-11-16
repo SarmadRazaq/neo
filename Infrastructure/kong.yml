@@ -1,0 +1,118 @@
+_format_version: "2.1"
+_transform: true
+
+###
+### Consumers / Users
+###
+consumers:
+  - username: anon
+    keyauth_credentials:
+      - key: ${supabase_anon_key}
+  - username: service_role
+    keyauth_credentials:
+      - key: ${supabase_service_role_key}
+
+###
+### Access Control List
+###
+acls:
+  - consumer: anon
+    group: anon
+  - consumer: service_role
+    group: admin
+
+###
+### API Routes
+###
+
+services:
+  ## Open Auth routes (no API key required)
+  ## These are needed for OAuth flows, magic links, etc.
+  - name: auth-v1-open-verify
+    url: http://gotrue.${service_namespace}.local:3567/verify
+    routes:
+      - name: auth-v1-open-verify
+        strip_path: true
+        paths:
+          - /auth/v1/verify
+    plugins:
+      - name: cors
+
+  - name: auth-v1-open-callback
+    url: http://gotrue.${service_namespace}.local:3567/callback
+    routes:
+      - name: auth-v1-open-callback
+        strip_path: true
+        paths:
+          - /auth/v1/callback
+    plugins:
+      - name: cors
+
+  - name: auth-v1-open-authorize
+    url: http://gotrue.${service_namespace}.local:3567/authorize
+    routes:
+      - name: auth-v1-open-authorize
+        strip_path: true
+        paths:
+          - /auth/v1/authorize
+    plugins:
+      - name: cors
+
+  ## Secure Auth routes (API key required)
+  - name: auth-v1
+    url: http://gotrue.${service_namespace}.local:3567/
+    routes:
+      - name: auth-v1-all
+        strip_path: true
+        paths:
+          - /auth/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow:
+            - admin
+            - anon
+
+  ## Secure REST routes (PostgREST)
+  - name: rest-v1
+    url: http://postgrest.${service_namespace}.local:3000/
+    routes:
+      - name: rest-v1-all
+        strip_path: true
+        paths:
+          - /rest/v1/
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: true
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow:
+            - admin
+            - anon
+
+  ## pg-meta routes (for Studio database introspection)
+  ## Admin only - requires service_role key
+  - name: pg-meta
+    url: http://pgmeta.${service_namespace}.local:8080/
+    routes:
+      - name: pg-meta-all
+        strip_path: true
+        paths:
+          - /pg/
+    plugins:
+      - name: key-auth
+        config:
+          hide_credentials: false
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow:
+            - admin

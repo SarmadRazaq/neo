@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+      "langchain-docs": {
+        "url": "https://docs.langchain.com/mcp"
+      },
+      "livekit-docs": {
+        "url": "https://docs.livekit.io/mcp"
+      }
+    }
+  }

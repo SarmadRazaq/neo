@@ -1,0 +1,14 @@
+node_modules/
+dist/
+release/
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+.env
+.doppler-token
+src/main/.doppler-token
+.vscode/
+.idea/
+ai_outputs

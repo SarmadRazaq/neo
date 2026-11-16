@@ -1,0 +1,25 @@
+{
+  "name": "neo-project-root",
+  "version": "1.0.0",
+  "description": "NEO - AI Voice Assistant with LiveKit integration",
+  "private": true,
+  "scripts": {
+    "dev": "bash dev.sh",
+    "dev:backend": "cd Backend && doppler run -- npm run start:dev",
+    "dev:frontend": "cd Frontend/electron && npm run dev",
+    "build:backend": "cd Backend && npm run build",
+    "build:frontend": "cd Frontend/electron && npm run build",
+    "prisma:generate": "cd Backend && npx prisma generate",
+    "prisma:migrate": "cd Backend && doppler run -- npx prisma migrate dev",
+    "prisma:studio": "cd Backend && doppler run -- npx prisma studio",
+    "bundle": "node scripts/bundle.js",
+    "bundle:win": "node scripts/bundle.js --win",
+    "bundle:mac": "node scripts/bundle.js --mac",
+    "bundle:linux": "node scripts/bundle.js --linux",
+    "docker:build": "cd Backend && docker build -t neo-backend .",
+    "docker:run": "docker run -p 3000:3000 --env-file Backend/.env neo-backend"
+  },
+  "keywords": ["neo", "ai", "voice-assistant", "livekit", "nestjs", "electron"],
+  "author": "",
+  "license": "UNLICENSED"
+}
